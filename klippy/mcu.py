@@ -180,7 +180,8 @@ class MCU_endstop:
                                , self._oid)
     def home_prepare(self):
         pass
-    def home_start(self, print_time, sample_time, sample_count, rest_time):
+    def home_start(self, print_time, sample_time, sample_count, rest_time,
+                   triggered=True):
         clock = self._mcu.print_time_to_clock(print_time)
         rest_ticks = int(rest_time * self._mcu.get_adjusted_freq())
         self._homing = True
@@ -188,7 +189,8 @@ class MCU_endstop:
         self._next_query_time = self._min_query_time + self.RETRY_QUERY
         self._home_cmd.send(
             [self._oid, clock, self._mcu.seconds_to_clock(sample_time),
-             sample_count, rest_ticks, 1 ^ self._invert], reqclock=clock)
+             sample_count, rest_ticks, triggered ^ self._invert],
+            reqclock=clock)
         for s in self._steppers:
             s.note_homing_start(clock)
     def home_wait(self, home_end_time):
