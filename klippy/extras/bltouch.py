@@ -40,7 +40,8 @@ class BLTouchEndstopWrapper:
         self.mcu_endstop = mcu.setup_pin('endstop', pin_params)
         # Setup for sensor test
         self.next_test_time = 0.
-        self.test_sensor_pin = config.getboolean('test_sensor_pin', True)
+        self.pin_up_touch_triggered = config.getboolean(
+            'triggered_on_pin_up_touch_mode', True)
         self.pin_up_triggered = config.getboolean('triggered_on_pin_up', False)
         self.start_mcu_pos = []
         # Calculate pin move time
@@ -109,7 +110,8 @@ class BLTouchEndstopWrapper:
         self.verify_state(check_start_time, check_end_time,
                           self.pin_up_triggered, "raise probe")
     def test_sensor(self):
-        if not self.test_sensor_pin:
+        if not self.pin_up_touch_triggered or self.pin_up_triggered:
+            # Nothing to test
             return
         toolhead = self.printer.lookup_object('toolhead')
         print_time = toolhead.get_last_move_time()
