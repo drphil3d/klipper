@@ -1,0 +1,108 @@
+[mcu]
+serial: /dev/serial/by-id/usb-Klipper_Klipper_firmware_12345-if00
+baud: 250000
+
+[stepper_x]
+step_pin: B15
+dir_pin: A16
+enable_pin: B16
+step_distance: .005
+endstop_pin: ^B26
+position_endstop: 0
+position_max: 170
+
+[stepper_y]
+step_pin: A21
+dir_pin: A26
+enable_pin: A25
+step_distance: .005
+endstop_pin: ^A11
+position_endstop: 0
+position_max: 220
+
+[stepper_z]
+step_pin: A29
+dir_pin: B1
+enable_pin: B0
+step_distance: .005
+endstop_pin: ^A10
+position_endstop: 0
+position_max: 190
+
+[extruder]
+step_pin: B14
+dir_pin: B23
+enable_pin: !B22
+step_distance: .002
+nozzle_diameter: 0.400
+filament_diameter: 1.750
+heater_pin: A5
+sensor_type: EPCOS 100K B57560G104F
+sensor_pin: A23
+control: pid
+pid_Kp: 22.2
+pid_Ki: 1.08
+pid_Kd: 114
+min_temp: 0
+max_temp: 250
+
+
+
+[output_pin stepper_x_current]
+pin: PB17, PB
+pwm: True
+scale: 2.0
+cycle_time: .000030
+hardware_pwm: True
+static_value: 1.3
+
+[output_pin stepper_y_current]
+pin: B18
+pwm: True
+scale: 2.0
+cycle_time: .000030
+hardware_pwm: True
+static_value: 1.3
+
+[output_pin stepper_z_current]
+pin: B19
+pwm: True
+scale: 2.0
+cycle_time: .000030
+hardware_pwm: True
+static_value: 1.3
+
+[output_pin stepper_e_current]
+pin: A2
+pwm: True
+scale: 2.0
+cycle_time: .000030
+hardware_pwm: True
+static_value: 1.3
+
+
+[driver drv8825_32 stepper x]
+type = DRV8825
+microsteps = 16
+
+[static_digital_output stepper_config]
+pins:
+    A19, B20, A27, B10
+
+[fan]
+pin: a6
+#pin: b25
+#pin: b27
+
+#[heater_fan nozzle_cooling_fan]
+#pin: b25
+
+[printer]
+kinematics: cartesian
+max_velocity: 400
+max_accel: 3000
+max_z_velocity: 25
+max_z_accel: 30
+
+[static_digital_output yellow_led]
+pins: B3

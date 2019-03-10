@@ -4,3 +4,5 @@ out
 .config
 .config.old
 klippy/.version
+config/g2-sam3xc-due.cfg
+config/g2-sam3xc.cfg
