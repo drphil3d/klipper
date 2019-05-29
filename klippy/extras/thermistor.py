@@ -10,8 +10,9 @@ KELVIN_TO_CELCIUS = -273.15
 
 # Analog voltage to temperature converter for thermistors
 class Thermistor:
-    def __init__(self, pullup):
+    def __init__(self, pullup, static_resistor):
         self.pullup = pullup
+        self.static_resistor = static_resistor
         self.c1 = self.c2 = self.c3 = 0.
     def setup_coefficients(self, t1, r1, t2, r2, t3, r3, name=""):
         # Calculate Steinhart-Hart coefficents from temp measurements.
@@ -48,7 +49,7 @@ class Thermistor:
         # Calculate temperature from adc
         adc = max(.00001, min(.99999, adc))
         r = self.pullup * adc / (1.0 - adc)
-        ln_r = math.log(r)
+        ln_r = math.log(r - self.static_resistor)
         inv_t = self.c1 + self.c2 * ln_r + self.c3 * ln_r**3
         return 1.0/inv_t + KELVIN_TO_CELCIUS
     def calc_adc(self, temp):
@@ -63,13 +64,14 @@ class Thermistor:
             ln_r = math.pow(x - y, 1./3.) - math.pow(x + y, 1./3.)
         else:
             ln_r = (inv_t - self.c1) / self.c2
-        r = math.exp(ln_r)
+        r = math.exp(ln_r) + self.static_resistor
         return r / (self.pullup + r)
 
 # Create an ADC converter with a thermistor
 def PrinterThermistor(config, params):
     pullup = config.getfloat('pullup_resistor', 4700., above=0.)
-    thermistor = Thermistor(pullup)
+    static_resistor = config.getfloat('static_resistor', 0., minval=0.)
+    thermistor = Thermistor(pullup, static_resistor)
     if 'beta' in params:
         thermistor.setup_coefficients_beta(
             params['t1'], params['r1'], params['beta'])
